@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #0f172a;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "1. Assistito", "label": "1. Assistito", "shape": "dot", "title": "\u003cb\u003e1. Assistito\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Fortino Anna", "label": "Fortino Anna", "shape": "dot", "title": "\u003cb\u003eFortino Anna\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "2. Servizio Sanitario Nazionale", "label": "2. Servizio Sanitario Nazionale", "shape": "dot", "title": "\u003cb\u003e2. Servizio Sanitario Nazionale\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Ricerca elettronica", "label": "Ricerca elettronica", "shape": "dot", "title": "\u003cb\u003eRicerca elettronica\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "3. Promemoria", "label": "3. Promemoria", "shape": "dot", "title": "\u003cb\u003e3. Promemoria\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "1501A4013127633_280420261452315530009468727945.pdf", "label": "1501A4013127633_280420261452315530009468727945.pdf", "shape": "dot", "title": "\u003cb\u003e1501A4013127633_280420261452315530009468727945.pdf\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "4. Provincia", "label": "4. Provincia", "shape": "dot", "title": "\u003cb\u003e4. Provincia\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Campania", "label": "Campania", "shape": "dot", "title": "\u003cb\u003eCampania\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "5. Codice ASL", "label": "5. Codice ASL", "shape": "dot", "title": "\u003cb\u003e5. Codice ASL\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "207", "label": "207", "shape": "dot", "title": "\u003cb\u003e207\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "6. Disposizioni regionali", "label": "6. Disposizioni regionali", "shape": "dot", "title": "\u003cb\u003e6. Disposizioni regionali\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "SIGLA PROVINCIA:SA", "label": "SIGLA PROVINCIA:SA", "shape": "dot", "title": "\u003cb\u003eSIGLA PROVINCIA:SA\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "7. Prescrizione", "label": "7. Prescrizione", "shape": "dot", "title": "\u003cb\u003e7. Prescrizione\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "(RCD) RIVAROXABAN 15MG 42 UNITA\u0027 USO ORALE", "label": "(RCD) RIVAROXABAN 15MG 42 UNITA\u0027 USO ORALE", "shape": "dot", "title": "\u003cb\u003e(RCD) RIVAROXABAN 15MG 42 UNITA\u0027 USO ORALE\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "8. Tipo di prescrizione", "label": "8. Tipo di prescrizione", "shape": "dot", "title": "\u003cb\u003e8. Tipo di prescrizione\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "S,H,ALTRO", "label": "S,H,ALTRO", "shape": "dot", "title": "\u003cb\u003eS,H,ALTRO\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "9. Priorit\u00e0", "label": "9. Priorit\u00e0", "shape": "dot", "title": "\u003cb\u003e9. Priorit\u00e0\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "U,B,D,P", "label": "U,B,D,P", "shape": "dot", "title": "\u003cb\u003eU,B,D,P\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "10. Prescrizione QTA", "label": "10. Prescrizione QTA", "shape": "dot", "title": "\u003cb\u003e10. Prescrizione QTA\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "NOTE", "label": "NOTE", "shape": "dot", "title": "\u003cb\u003eNOTE\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "11. Diagnosi", "label": "11. Diagnosi", "shape": "dot", "title": "\u003cb\u003e11. Diagnosi\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "427.3", "label": "427.3", "shape": "dot", "title": "\u003cb\u003e427.3\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "12. Confezioni/Prestazioni", "label": "12. Confezioni/Prestazioni", "shape": "dot", "title": "\u003cb\u003e12. Confezioni/Prestazioni\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "1", "label": "1", "shape": "dot", "title": "\u003cb\u003e1\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "13. Tipo di ricetta", "label": "13. Tipo di ricetta", "shape": "dot", "title": "\u003cb\u003e13. Tipo di ricetta\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Assist.SSN", "label": "Assist.SSN", "shape": "dot", "title": "\u003cb\u003eAssist.SSN\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "14. Data", "label": "14. Data", "shape": "dot", "title": "\u003cb\u003e14. Data\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "28/04/2026", "label": "28/04/2026", "shape": "dot", "title": "\u003cb\u003e28/04/2026\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "15. Cognome e nome del medico", "label": "15. Cognome e nome del medico", "shape": "dot", "title": "\u003cb\u003e15. Cognome e nome del medico\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "ESPOSITO MARIA", "label": "ESPOSITO MARIA", "shape": "dot", "title": "\u003cb\u003eESPOSITO MARIA\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "16. Codice fiscale del medico", "label": "16. Codice fiscale del medico", "shape": "dot", "title": "\u003cb\u003e16. Codice fiscale del medico\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "SPSMRA95C68A509T", "label": "SPSMRA95C68A509T", "shape": "dot", "title": "\u003cb\u003eSPSMRA95C68A509T\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "17. Codice autenticazione", "label": "17. Codice autenticazione", "shape": "dot", "title": "\u003cb\u003e17. Codice autenticazione\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "280420261452315530009468727945", "label": "280420261452315530009468727945", "shape": "dot", "title": "\u003cb\u003e280420261452315530009468727945\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "18. Articolo 11, comma 16 del DL 31 maggio 2010, n.78", "label": "18. Articolo 11, comma 16 del DL 31 maggio 2010, n.78", "shape": "dot", "title": "\u003cb\u003e18. Articolo 11, comma 16 del DL 31 maggio 2010, n.78\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Rilasciato ai sensi dell\u0027art.11, comma 16 del DL 31 maggio 2010, n.78 e dell\u2019art.1, comma 4 del DM 2 novembre 2011", "label": "Rilasciato ai sensi dell\u0027art.11, comma 16 del DL 31 maggio 2010, n.78 e dell\u2019art.1, comma 4 del DM 2 novembre 2011", "shape": "dot", "title": "\u003cb\u003eRilasciato ai sensi dell\u0027art.11, comma 16 del DL 31 maggio 2010, n.78 e dell\u2019art.1, comma 4 del DM 2 novembre 2011\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "19. Farmaci in DPC", "label": "19. Farmaci in DPC", "shape": "dot", "title": "\u003cb\u003e19. Farmaci in DPC\u003c/b\u003e"}, {"color": "#97c2fc", "font": {"color": "#f8fafc"}, "id": "Nella regione di prescrizione", "label": "Nella regione di prescrizione", "shape": "dot", "title": "\u003cb\u003eNella regione di prescrizione\u003c/b\u003e"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "1. Assistito", "label": "identificazione", "title": "identificazione", "to": "Fortino Anna"}, {"arrows": "to", "from": "2. Servizio Sanitario Nazionale", "label": "relazione servizio", "title": "relazione servizio", "to": "Ricerca elettronica"}, {"arrows": "to", "from": "3. Promemoria", "label": "identificazione", "title": "identificazione", "to": "1501A4013127633_280420261452315530009468727945.pdf"}, {"arrows": "to", "from": "4. Provincia", "label": "localizzazione", "title": "localizzazione", "to": "Campania"}, {"arrows": "to", "from": "5. Codice ASL", "label": "codifica", "title": "codifica", "to": "207"}, {"arrows": "to", "from": "6. Disposizioni regionali", "label": "regolamentazione", "title": "regolamentazione", "to": "SIGLA PROVINCIA:SA"}, {"arrows": "to", "from": "7. Prescrizione", "label": "farmaco", "title": "farmaco", "to": "(RCD) RIVAROXABAN 15MG 42 UNITA\u0027 USO ORALE"}, {"arrows": "to", "from": "8. Tipo di prescrizione", "label": "categorizzazione", "title": "categorizzazione", "to": "S,H,ALTRO"}, {"arrows": "to", "from": "9. Priorit\u00e0", "label": "pianificazione", "title": "pianificazione", "to": "U,B,D,P"}, {"arrows": "to", "from": "10. Prescrizione QTA", "label": "annotazione", "title": "annotazione", "to": "NOTE"}, {"arrows": "to", "from": "11. Diagnosi", "label": "identificazione", "title": "identificazione", "to": "427.3"}, {"arrows": "to", "from": "12. Confezioni/Prestazioni", "label": "quantificazione", "title": "quantificazione", "to": "1"}, {"arrows": "to", "from": "13. Tipo di ricetta", "label": "tipologia", "title": "tipologia", "to": "Assist.SSN"}, {"arrows": "to", "from": "14. Data", "label": "cronologia", "title": "cronologia", "to": "28/04/2026"}, {"arrows": "to", "from": "15. Cognome e nome del medico", "label": "identificazione", "title": "identificazione", "to": "ESPOSITO MARIA"}, {"arrows": "to", "from": "16. Codice fiscale del medico", "label": "codifica", "title": "codifica", "to": "SPSMRA95C68A509T"}, {"arrows": "to", "from": "17. Codice autenticazione", "label": "autenticazione", "title": "autenticazione", "to": "280420261452315530009468727945"}, {"arrows": "to", "from": "18. Articolo 11, comma 16 del DL 31 maggio 2010, n.78", "label": "legge", "title": "legge", "to": "Rilasciato ai sensi dell\u0027art.11, comma 16 del DL 31 maggio 2010, n.78 e dell\u2019art.1, comma 4 del DM 2 novembre 2011"}, {"arrows": "to", "from": "19. Farmaci in DPC", "label": "localizzazione", "title": "localizzazione", "to": "Nella regione di prescrizione"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"nodes": {"shape": "box", "color": {"background": "#1e40af", "border": "#3b82f6", "highlight": {"background": "#2563eb", "border": "#60a5fa"}}, "font": {"size": 14, "color": "#f8fafc", "face": "monospace"}, "margin": 10, "shadow": true}, "edges": {"color": {"color": "#475569", "highlight": "#60a5fa"}, "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "font": {"size": 11, "color": "#94a3b8", "align": "middle"}, "smooth": {"type": "curvedCW", "roundness": 0.2}, "shadow": true}, "physics": {"enabled": true, "barnesHut": {"gravitationalConstant": -8000, "centralGravity": 0.3, "springLength": 150, "springConstant": 0.04, "damping": 0.09}}, "interaction": {"hover": true, "navigationButtons": true, "keyboard": true}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

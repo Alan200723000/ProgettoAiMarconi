@@ -1,4 +1,4 @@
-    """
+"""
     app_unificata.py
     ────────────────
     Fusione di:

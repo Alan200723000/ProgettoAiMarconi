@@ -1,0 +1,19 @@
+{
+  "utenti": {
+    "studente": {
+      "password": "studente123",
+      "ruolo": "studente",
+      "nome_display": "Francesco Perrotta"
+    },
+    "docente": {
+      "password": "docente123",
+      "ruolo": "docente",
+      "nome_display": "Prof. Rossi"
+    },
+    "admin": {
+      "password": "admin",
+      "ruolo": "docente",
+      "nome_display": "Amministratore"
+    }
+  }
+}

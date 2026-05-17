@@ -1,77 +1,147 @@
-# Piattaforma Scolastica AI
+# 🏫 Piattaforma Scolastica AI — Guida Setup
 
-Applicazione desktop con **Flet** e **Ollama (llama3)** per la gestione del calendario scolastico.
-
-## Struttura file
-
-```
-piattaforma_scolastica/
-│
-├── main.py                 ← Entry point — avvia l'app con:  python main.py
-│
-├── styles.py               ← Palette colori, costanti UI, icone
-├── auth.py                 ← Autenticazione utenti (legge credenziali.json)
-├── credenziali.json        ← Utenti, password e ruoli  ← MODIFICA QUI
-│
-├── utils_calendario.py     ← Persistenza orario.json, logica calcoli, Ollama
-├── ui_helpers.py           ← Widget riutilizzabili (cal_tf, badge, pill…)
-├── chatbot.py              ← Pannello chat AI laterale
-├── registro.py             ← Pannelli registro docente e studente
-└── calendario.py           ← Vista calendario completa (docente + studente)
-```
-
-## Dipendenze
+## Installazione dipendenze
 
 ```bash
-pip install flet langchain-ollama langchain-community langchain chromadb
-pip install SpeechRecognition gTTS pygame PyPDF2
+pip install flet flask flask-cors
 ```
 
-Ollama deve essere in esecuzione:
+---
+
+## Avvio
+
+### Modalità standalone (solo locale)
 ```bash
-ollama serve
-ollama pull llama3
+python main.py
+```
+Il server Flask si avvia automaticamente in background sulla porta 5000.
+
+### Modalità server dedicato (consigliata per LAN)
+Apri due terminali:
+
+**Terminale 1 — Server API:**
+```bash
+python server.py
 ```
 
-## Credenziali
+**Terminale 2 — App Flet:**
+```bash
+python main.py
+```
 
-Modifica `credenziali.json` per aggiungere o modificare utenti:
+---
 
-```json
-{
-  "utenti": {
-    "mario": {
-      "password": "secret",
-      "ruolo": "studente",
-      "nome_display": "Mario Rossi"
-    },
-    "prof_bianchi": {
-      "password": "secret2",
-      "ruolo": "docente",
-      "nome_display": "Prof. Bianchi"
-    }
-  }
+## Comunicazione in rete locale (LAN)
+
+Il server Flask si mette in ascolto su `0.0.0.0:5000`, rendendosi raggiungibile da **tutti i dispositivi sulla stessa rete Wi-Fi o cablata**.
+
+### Come trovare l'IP del server
+| Sistema | Comando |
+|---------|---------|
+| Windows | `ipconfig` → cerca "Indirizzo IPv4" |
+| Linux   | `ip addr` oppure `ifconfig` |
+| macOS   | `ifconfig en0` |
+
+### Esempio
+Se il PC server ha IP `192.168.1.50`, gli altri dispositivi potranno accedere alle API su:
+```
+http://192.168.1.50:5000/api/ping
+```
+
+L'IP viene mostrato anche nella Home dell'app (banner 📡).
+
+---
+
+## Sistema di registrazione
+
+### Studenti
+Devono inserire:
+1. **Codice scuola** (fornito dalla segreteria)
+2. **Nome e Cognome**
+3. **Email personale**
+4. **Classe** (opzionale, es. 5F)
+5. **Password** (min. 6 caratteri)
+
+### Docenti
+Devono inserire:
+1. **Codice scuola** (fornito dall'amministrazione)
+2. **Username istituzionale** (fornito dalla scuola, es. `m.rossi`)
+3. **Nome e Cognome**
+4. **Materia principale** (opzionale)
+5. **Password** (min. 6 caratteri)
+
+---
+
+## Codici scuola validi
+
+I codici validi sono definiti in `auth.py` nella variabile `CODICI_SCUOLA_VALIDI`:
+
+```python
+CODICI_SCUOLA_VALIDI = {
+    "SCUOLA2024",
+    "ISTITUTO5F",
+    "LICEO2024",
+    "TECNICO01",
 }
 ```
 
-I ruoli validi sono `"studente"` e `"docente"`.
+Aggiungine altri a piacere. In una versione produzione questi andrebbero in un database o file di configurazione separato.
 
-## Gestione credenziali via codice
+---
 
-```python
-from auth import aggiungi_utente, rimuovi_utente, verifica_login
+## Credenziali di test (credenziali.json)
 
-# Aggiunge un utente
-aggiungi_utente("nuovostudente", "password123", "studente", "Luca Verdi")
+| Username   | Password    | Ruolo    |
+|------------|-------------|----------|
+| `studente` | `studente123` | Studente |
+| `docente`  | `docente123`  | Docente  |
+| `admin`    | `admin`       | Docente  |
 
-# Verifica login
-ok, errore = verifica_login("mario", "secret", "studente")
+> ⚠️ Le password nel file sono in chiaro solo per compatibilità legacy. Le nuove registrazioni usano hash SHA-256.
 
-# Rimuove un utente
-rimuovi_utente("nuovostudente")
+---
+
+## Endpoint API REST
+
+| Metodo | Endpoint | Auth | Descrizione |
+|--------|----------|------|-------------|
+| GET    | `/api/ping` | No | Stato server |
+| POST   | `/api/login` | No | Login → token |
+| POST   | `/api/logout` | Token | Logout |
+| POST   | `/api/registra/studente` | No | Nuova registrazione studente |
+| POST   | `/api/registra/docente` | No | Nuova registrazione docente |
+| GET    | `/api/classi` | Token | Lista classi |
+| GET    | `/api/orario/<classe>` | Token | Leggi orario |
+| PUT    | `/api/orario/<classe>` | Docente | Aggiorna orario |
+| GET    | `/api/registro/<classe>/<data>` | Token | Leggi registro |
+| PUT    | `/api/registro/<classe>/<data>` | Docente | Salva registro |
+| GET    | `/api/verifiche/<classe>` | Token | Lista verifiche |
+| POST   | `/api/verifiche/<classe>` | Docente | Aggiungi verifica |
+| DELETE | `/api/verifiche/<classe>/<idx>` | Docente | Elimina verifica |
+| GET    | `/api/interrogazioni/<classe>` | Token | Lista interrogazioni |
+| POST   | `/api/interrogazioni/<classe>` | Docente | Apri periodo |
+| POST   | `/api/interrogazioni/<classe>/<idx>/assegna` | Token | Studente conferma |
+
+### Autenticazione
+Usa il token ricevuto dal login nell'header:
+```
+Authorization: Bearer <token>
 ```
 
-## Dati salvati
+### Esempio login con curl
+```bash
+curl -X POST http://192.168.1.50:5000/api/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"studente","password":"studente123","ruolo":"studente"}'
+```
 
-- `orario.json` — orario, verifiche, interrogazioni e registro (creato automaticamente)
-- `credenziali.json` — utenti (da creare/modificare manualmente o via `auth.py`)
+---
+
+## File modificati
+
+| File | Modifiche |
+|------|-----------|
+| `auth.py` | Registrazione studenti/docenti, validazioni, hash password |
+| `server.py` | **Nuovo** — Server Flask per comunicazione LAN |
+| `main.py` | Schermate registrazione, avvio server in background |
+| `credenziali.json` | Aggiornato con nuovi campi (codice_scuola, email, ecc.) |

@@ -2,9 +2,21 @@
   "classi": {
     "5F": {
       "orario": {},
-      "verifiche": [],
+      "verifiche": [
+        {
+          "materia": "Lingua inglese",
+          "data": "20/1/2025",
+          "descrizione": "fsdf"
+        }
+      ],
       "interrogazioni": [],
-      "registro": {},
+      "registro": {
+        "2026-05-17": {
+          "argomenti": "sdsd",
+          "compiti": "fvfv",
+          "assenti": []
+        }
+      },
       "nome_studente": "perrotta francesco"
     }
   },

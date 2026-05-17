@@ -3,17 +3,38 @@
     "studente": {
       "password": "studente123",
       "ruolo": "studente",
-      "nome_display": "Francesco Perrotta"
+      "nome_display": "Francesco Perrotta",
+      "email": "francesco.perrotta@email.com",
+      "codice_scuola": "SCUOLA2024",
+      "classe": "5F",
+      "registrato_il": "2024-09-01T08:00:00"
     },
     "docente": {
       "password": "docente123",
       "ruolo": "docente",
-      "nome_display": "Prof. Rossi"
+      "nome_display": "Prof. Rossi",
+      "email": "anna.rossi@email.com",
+      "codice_scuola": "SCUOLA2024",
+      "materia": "Matematica",
+      "registrato_il": "2024-09-01T08:00:00"
     },
     "admin": {
       "password": "admin",
       "ruolo": "docente",
-      "nome_display": "Amministratore"
+      "nome_display": "Amministratore",
+      "email": "",
+      "codice_scuola": "SCUOLA2024",
+      "materia": "",
+      "registrato_il": "2024-09-01T08:00:00"
+    },
+    "pippo": {
+      "password": "8bb0cf6eb9b17d0f7d22b456f121257dc1254e1f01665370476383ea776df414",
+      "ruolo": "docente",
+      "nome_display": "PIPPO FRANCO",
+      "email": "",
+      "codice_scuola": "SCUOLA2024",
+      "materia": "FISICA",
+      "registrato_il": "2026-05-14T10:09:52.911202"
     }
   }
 }
